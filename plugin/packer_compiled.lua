@@ -69,6 +69,11 @@ end
 time([[try_loadstring definition]], false)
 time([[Defining packer_plugins]], true)
 _G.packer_plugins = {
+  ["doom-one.nvim"] = {
+    loaded = true,
+    path = "/Users/shinolr/.local/share/nvim/site/pack/packer/start/doom-one.nvim",
+    url = "https://github.com/NTBBloodbath/doom-one.nvim"
+  },
   ["packer.nvim"] = {
     loaded = true,
     path = "/Users/shinolr/.local/share/nvim/site/pack/packer/start/packer.nvim",

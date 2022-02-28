@@ -62,6 +62,18 @@ local spaces = function()
 	return "spaces: " .. vim.api.nvim_buf_get_option(0, "shiftwidth")
 end
 
+local tw = function()
+  local space = vim.fn.search([[\s\+$]], 'nwc')
+  return space ~= 0 and "trailing:"..space or ""
+end
+
+local trailingWhiteSpace = {
+  tw,
+  color = {
+    bg = '#bb2200'
+  }
+}
+
 lualine.setup({
 	options = {
 		icons_enabled = true,
@@ -78,7 +90,7 @@ lualine.setup({
 		-- lualine_x = { "encoding", "fileformat", "filetype" },
 		lualine_x = { diff, spaces, "encoding", filetype },
 		lualine_y = { location },
-		lualine_z = { progress },
+		lualine_z = { progress, trailingWhiteSpace },      
 	},
 	inactive_sections = {
 		lualine_a = {},

@@ -62,12 +62,43 @@ local spaces = function()
 	return "spaces: " .. vim.api.nvim_buf_get_option(0, "shiftwidth")
 end
 
-local tw = function()
-  local space = vim.fn.search([[\s\+$]], 'nwc')
-  return space ~= 0 and "trailing:"..space or ""
+local mi = function()
+  local space_pat = [[\v^ +]]
+  local tab_pat = [[\v^\t+]]
+  local space_indent = vim.fn.search(space_pat, 'nwc')
+  local tab_indent = vim.fn.search(tab_pat, 'nwc')
+  local mixed = (space_indent > 0 and tab_indent > 0)
+  local mixed_same_line
+  if not mixed then
+    mixed_same_line = vim.fn.search([[\v^(\t+ | +\t)]], 'nwc')
+    mixed = mixed_same_line > 0
+  end
+  if not mixed then return '' end
+  if mixed_same_line ~= nil and mixed_same_line > 0 then
+     return 'MI:'..mixed_same_line
+  end
+  local space_indent_cnt = vim.fn.searchcount({pattern=space_pat, max_count=1e3}).total
+  local tab_indent_cnt =  vim.fn.searchcount({pattern=tab_pat, max_count=1e3}).total
+  if space_indent_cnt > tab_indent_cnt then
+    return 'MI:'..tab_indent
+  else
+    return 'MI:'..space_indent
+  end
 end
 
-local trailingWhiteSpace = {
+local mixed_indent = {
+  mi,
+  color = {
+    bg = '#ff0000'
+  }
+}
+
+local tw = function()
+  local space = vim.fn.search([[\s\+$]], 'nwc')
+  return space ~= 0 and "TW:"..space or ""
+end
+
+local trailing_white_space = {
   tw,
   color = {
     bg = '#bb2200'
@@ -90,7 +121,7 @@ lualine.setup({
 		-- lualine_x = { "encoding", "fileformat", "filetype" },
 		lualine_x = { diff, spaces, "encoding", filetype },
 		lualine_y = { location },
-		lualine_z = { progress, trailingWhiteSpace },      
+		lualine_z = { progress, trailing_white_space, mixed_indent },      
 	},
 	inactive_sections = {
 		lualine_a = {},

@@ -12,4 +12,4 @@ require "custom.gitsigns"
 require "custom.nvim-tree"
 require "custom.bufferline"
 require "custom.lualine"
-
+require "custom.toggleterm"
